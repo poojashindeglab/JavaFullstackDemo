@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+<!--
+	Autowiring By Name
+	-->
+<bean name="address" class="com.example.fullstack.autowiring.Address">
+	<property name="city" value="Pune"/>
+	<property name="state" value="MH"/>
+</bean>
+    <bean name="employee" class="com.example.fullstack.autowiring.Employee" autowire="byName">
+            </bean>
+           
+<!--
+	Autowiring By Type
+-->
+<bean name="department" class="com.example.fullstack.autowiringByType.Department">
+<property name="deptId" value="1"/>
+<property name="deptName" value="CE"/>
+</bean>
+
+    <bean name="studentByType" class="com.example.fullstack.autowiringByType.Student" autowire="byType">
+            </bean>
+            
+<!--
+	Autowiring By COnstructor
+	-->        
+	<bean name="specification" class="com.example.fullstack.autowiringByConstructor.Specification">
+	<property name="model" value="TATA"/>
+	<property name="make" value="V8"/>
+	</bean>    
+	
+	<bean name="bike" class="com.example.fullstack.autowiringByConstructor.Bike" autowire="constructor"/>
+	
+</beans>

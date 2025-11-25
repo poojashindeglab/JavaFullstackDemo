@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean id="mybean" class="com.example.fullstack.MyBean">
+		<property name="message" value="Hello, Spring Beans!" />
+</bean>
+
+<!-- Constructor arguments-->
+	<bean id="carSpecification" class="com.example.fullstack.Specification">
+		<property name="make" value="V8" />
+		<property name="model" value="Mustang" />
+</bean>
+
+	<bean id="car" class="com.example.fullstack.Car">
+		<constructor-arg ref="carSpecification" />
+	
+</bean>
+
+<!-- Setter arguments-->
+	<bean id="bikeSpecification" class="com.example.fullstack.Specification">
+	<property name="make" value="Yamaha" />
+	<property name="model" value="FZ" />
+	</bean>
+	<bean id="bike" class="com.example.fullstack.Bike">
+        <property name="specification" ref="bikeSpecification" />
+        </bean>
+
+    
+    
+</beans>

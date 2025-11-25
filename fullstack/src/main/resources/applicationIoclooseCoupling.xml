@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean id="newDataBaseProvider" class="com.example.fullstack.coupling.NewDataBaseProvider"/>
+
+<bean id ="userDatabaseProvider" class="com.example.fullstack.coupling.UserDataBaseProvider"/>
+    <bean id="webServiceProvider" class="com.example.fullstack.coupling.WebServiceProvider"/>
+    
+    <bean id="userManagerNewDataBaseProvider" class="com.example.fullstack.coupling.UserManager">
+        <constructor-arg ref="newDataBaseProvider"/>
+        </bean>
+   
+    <bean id="userManagerWebServiceProvider" class="com.example.fullstack.coupling.UserManager">
+        <constructor-arg ref="webServiceProvider"/>
+        </bean>
+
+    <bean id="userManagerDataBaseProvider" class="com.example.fullstack.coupling.UserManager">
+        <constructor-arg ref="userDatabaseProvider"/>
+        </bean>
+</beans>
