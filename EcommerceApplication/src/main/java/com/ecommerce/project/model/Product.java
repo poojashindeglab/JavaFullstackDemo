@@ -6,19 +6,17 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Version;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 @Entity
+@Table(name = "products")
 public class Product {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long productId;
-	
-	@Version
-	private Long version;
 	
 	@NotEmpty(message = "Product name cannot be null or empty")
 	@Size(min = 3, message = "Product name must be at least 3 characters long")
@@ -40,7 +38,19 @@ public class Product {
 	@JoinColumn(name= "category_id")
 	Category category;
 
+	@ManyToOne
+	@JoinColumn(name = "seller_id")
+	private User user;
 	
+	
+	public User getUser() {
+		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
+	}
+
 	public Long getProductId() {
 		return productId;
 	}
@@ -119,8 +129,11 @@ public class Product {
 		super();
 	}
 
-	public Product(Long productId, String productName, String description, Double price, Integer quantity,
-			Double specialPrice, String image, Double discount, Category category) {
+	public Product(Long productId,
+			@NotEmpty(message = "Product name cannot be null or empty") @Size(min = 3, message = "Product name must be at least 3 characters long") String productName,
+			String description, @NotNull(message = "Price cannot be null") Double price,
+			@NotNull(message = "Quantity cannot be null") Integer quantity, Double specialPrice, String image,
+			@NotNull(message = "Discount cannot be null or empty") Double discount, Category category, User user) {
 		super();
 		this.productId = productId;
 		this.productName = productName;
@@ -131,13 +144,14 @@ public class Product {
 		this.image = image;
 		this.discount = discount;
 		this.category = category;
+		this.user = user;
 	}
 
 	@Override
 	public String toString() {
 		return "Product [productId=" + productId + ", productName=" + productName + ", description=" + description
 				+ ", price=" + price + ", quantity=" + quantity + ", specialPrice=" + specialPrice + ", image=" + image
-				+ ", discount=" + discount + ", category=" + category + "]";
+				+ ", discount=" + discount + ", category=" + category + ", user=" + user + "]";
 	}
 	
 
