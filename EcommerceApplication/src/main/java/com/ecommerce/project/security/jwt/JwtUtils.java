@@ -9,10 +9,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.http.ResponseCookie;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
+import org.springframework.web.util.WebUtils;
+
+import com.ecommerce.project.security.service.UserDetailsImpl;
 
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
@@ -20,6 +24,7 @@ import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.UnsupportedJwtException;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 
 @Component
@@ -33,8 +38,12 @@ public class JwtUtils {
 
 	@Value("${app-jwt-expiration-milliseconds:}")
 	private String jwtExpirationDate;
-
-	public String getTokenFromRequest(HttpServletRequest request) {
+	
+	@Value("${app-jwt-cookie-name:}")
+	private String jwtCookie;
+	
+	//Token based Authentication
+/*	public String getTokenFromRequest(HttpServletRequest request) {
 		String bearerToken = request.getHeader("Authorization");
 		logger.debug("Authorization header: {}", bearerToken);
 		if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
@@ -42,9 +51,21 @@ public class JwtUtils {
 		}
 
 		return null;
-	}
+	}*/
 
-	 public String generateTokenFromUsername(UserDetails userDetails) {
+	//Cookie based Authentication
+	public String getJwtFromCookie(HttpServletRequest request) {
+		
+		Cookie cookie = WebUtils.getCookie(request, jwtCookie);
+		if(cookie != null) {
+			return cookie.getValue();
+		}else {
+			return null;
+		}
+	}
+	
+	//Token Based Authentication
+	/* public String generateTokenFromUsername(UserDetails userDetails) {
 		 String username = userDetails.getUsername();
 
 	        Date currentDate = new Date();
@@ -55,11 +76,23 @@ public class JwtUtils {
 	                .expiration(expireDate)
 	                .signWith(key())
 	                .compact();
-	    }
+	    }*/
+	
+	//Cookie Based Authentication
+	
+	public ResponseCookie generateJwtCookie(UserDetailsImpl userPrincipal) {
+		String jwt = generateToken(userPrincipal);
+		ResponseCookie cookie = ResponseCookie.from(jwtCookie, jwt)
+				.path("/api")
+				.maxAge(24*60*60)
+				.httpOnly(false)
+				.build();
+		return cookie;
+	}
 	// generate JWT token
-	public String generateToken(Authentication authentication) {
+	public String generateToken(UserDetails userDetails) {
 
-		String username = authentication.getName();
+		String username = userDetails.getUsername();
 
 		Date currentDate = new Date();
 

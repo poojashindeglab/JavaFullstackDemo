@@ -10,6 +10,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import com.ecommerce.project.security.service.UserDetailsServiceImpl;
+
 import java.io.IOException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -22,7 +24,7 @@ public class AuthTokenFilter extends OncePerRequestFilter{
     private JwtUtils jwtUtils;
 
 	@Autowired
-    private UserDetailsService userDetailsService;
+    private UserDetailsServiceImpl userDetailsService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
@@ -30,8 +32,10 @@ public class AuthTokenFilter extends OncePerRequestFilter{
                                     FilterChain filterChain) throws ServletException, IOException {
 
         // Get JWT token from HTTP request
-        String token = jwtUtils.getTokenFromRequest(request);
+        //String token = jwtUtils.getTokenFromRequest(request);
 
+    	//Get JWT token from Cookie request
+    	String token = jwtUtils.getJwtFromCookie(request);
         // Validate Token
         if(StringUtils.hasText(token) && jwtUtils.validateToken(token)){
             // get username from token

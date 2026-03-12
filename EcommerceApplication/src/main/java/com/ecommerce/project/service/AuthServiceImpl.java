@@ -10,6 +10,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseCookie;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Service;
@@ -55,14 +56,17 @@ public class AuthServiceImpl {
 		UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
 
 		System.out.println("User Details: " + userDetails);
-		String jwtToken = jwtUtils.generateTokenFromUsername(userDetails);
+		//Token based authentication
+//		String jwtToken = jwtUtils.generateTokenFromUsername(userDetails);
+
+		ResponseCookie jwtToken = jwtUtils.generateJwtCookie(userDetails);
 
 		System.out.println("JwtToken : "+ jwtToken);
 		List<String> roles = userDetails.getAuthorities().stream().map(item -> item.getAuthority())
 				.collect(Collectors.toList());
 
 		UserInfoResponse response = new UserInfoResponse(userDetails.getId(), userDetails.getUsername(), roles,
-				jwtToken);
+				jwtToken.toString());
 		System.out.print("response : " + response);
 		return response;
 	}

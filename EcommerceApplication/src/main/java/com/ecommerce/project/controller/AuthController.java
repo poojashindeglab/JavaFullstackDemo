@@ -1,5 +1,6 @@
 package com.ecommerce.project.controller;
 
+import java.net.http.HttpHeaders;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -35,7 +36,7 @@ public class AuthController {
 	    	System.out.println("Username: " + loginRequest.getUsername());
 	    	System.out.println("Password: " + loginRequest.getPassword());
 	        UserInfoResponse token = authService.login(loginRequest);
-	        return ResponseEntity.ok(token);
+	        return ResponseEntity.ok().header(org.springframework.http.HttpHeaders.SET_COOKIE, token.getJwtToken()).body(token);
 	    } catch (Exception e) {
 	        e.printStackTrace();
 	        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
@@ -45,7 +46,6 @@ public class AuthController {
 
 	@PostMapping("/signup")
 	public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
-
 		User user = authService.registerUser(signUpRequest);
 
 		return new ResponseEntity<User>(user, HttpStatus.OK);
