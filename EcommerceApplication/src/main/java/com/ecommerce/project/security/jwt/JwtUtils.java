@@ -89,6 +89,14 @@ public class JwtUtils {
 				.build();
 		return cookie;
 	}
+	
+	public ResponseCookie getCleanCookie() {
+		ResponseCookie cookie = ResponseCookie.from(jwtCookie, null)
+				.path("/api")
+				.build();
+		return cookie;
+		
+	}
 	// generate JWT token
 	public String generateToken(UserDetails userDetails) {
 

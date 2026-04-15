@@ -8,7 +8,11 @@ public class UserInfoResponse {
     private String username;
     private List<String> roles;
 
-    public UserInfoResponse(Integer id, String username, List<String> roles, String jwtToken) {
+    public UserInfoResponse() {
+		super();
+	}
+
+	public UserInfoResponse(Integer id, String username, List<String> roles, String jwtToken) {
         this.id = id;
         this.username = username;
         this.roles = roles;

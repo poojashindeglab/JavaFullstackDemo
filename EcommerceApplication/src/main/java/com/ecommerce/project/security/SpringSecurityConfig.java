@@ -44,10 +44,10 @@ public class SpringSecurityConfig {
 	            session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 	    );
 
-	    http.authorizeHttpRequests(auth ->
-	            auth.requestMatchers("/api/auth/**").permitAll()
-	                .anyRequest().authenticated()
-	    );
+	    http.authorizeHttpRequests(auth ->{
+	    	auth.requestMatchers("/api/auth/**").permitAll();
+	    	auth.requestMatchers("/api/public/**").permitAll();
+	    auth.anyRequest().authenticated();});
 
 	    http.exceptionHandling(exception ->
 	            exception.authenticationEntryPoint(authEntrypoint)

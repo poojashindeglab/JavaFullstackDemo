@@ -5,8 +5,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.hibernate.validator.constraints.UniqueElements;
-import org.jspecify.annotations.Nullable;
+
+import com.ecommerce.project.annotation.ValidPassword;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -50,6 +50,7 @@ public class User {
 
 	@Column(name = "password")
 	@NotBlank
+	@ValidPassword
 	private String password;
 	
 	@ManyToMany(cascade = {CascadeType.MERGE,CascadeType.PERSIST},fetch = FetchType.EAGER)
