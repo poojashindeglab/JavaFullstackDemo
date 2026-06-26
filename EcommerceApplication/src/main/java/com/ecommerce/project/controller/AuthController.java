@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,9 +21,12 @@ import org.springframework.web.bind.annotation.RestController;
 import com.ecommerce.project.model.User;
 import com.ecommerce.project.security.jwt.JwtUtils;
 import com.ecommerce.project.security.request.LoginRequest;
+import com.ecommerce.project.security.request.RefreshToken;
+import com.ecommerce.project.security.request.RefreshTokenRequest;
 import com.ecommerce.project.security.request.SignupRequest;
 import com.ecommerce.project.security.response.MessageResponse;
 import com.ecommerce.project.security.response.UserInfoResponse;
+import com.ecommerce.project.security.service.RefreshTokenService;
 import com.ecommerce.project.security.service.UserDetailsImpl;
 import com.ecommerce.project.service.AuthServiceImpl;
 
@@ -37,13 +41,17 @@ public class AuthController {
 	
 	@Autowired
 	JwtUtils jwtUtils;
+	@Autowired
+	RefreshTokenService refService;
 
 	@PostMapping("/login")
 	public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
 	    try {
 	    	System.out.println("Username: " + loginRequest.getUsername());
 	    	System.out.println("Password: " + loginRequest.getPassword());
+	    	RefreshToken refToken = refService.createToken(loginRequest.getUsername());
 	        UserInfoResponse token = authService.login(loginRequest);
+	        token.setRefToken(refToken.getToken());
 	        return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, token.getJwtToken()).body(token);
 	    } catch (Exception e) {
 	        e.printStackTrace();
@@ -100,5 +108,14 @@ public class AuthController {
 		ResponseCookie cookie = jwtUtils.getCleanCookie();
 		return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString()).body(new MessageResponse("User has been signed out successfully!!"));
 		
+	}
+	
+	@PostMapping("/refresh")
+	public ResponseEntity<?> getRefreshToken(@RequestBody RefreshTokenRequest tokenRequest, Authentication authentication){
+		RefreshToken refTokenresponse = refService.verifyRefreshToken(tokenRequest.getRefreshToken());
+		
+		 UserInfoResponse token = authService.getTokenResponse((UserDetailsImpl)authentication.getPrincipal());
+	        token.setRefToken(refTokenresponse.getToken());
+	        return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, token.getJwtToken()).body(token);
 	}
 }

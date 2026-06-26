@@ -1,11 +1,17 @@
 package com.ecommerce.project.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -36,13 +42,23 @@ public class Product {
 	
 	@ManyToOne
 	@JoinColumn(name= "category_id")
-	Category category;
+	private Category category;
 
 	@ManyToOne
 	@JoinColumn(name = "seller_id")
 	private User user;
 	
+	@OneToMany(mappedBy = "product" ,cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+	private List<CartItem> products = new ArrayList<CartItem>();
 	
+	public List<CartItem> getProducts() {
+		return products;
+	}
+
+	public void setProducts(List<CartItem> products) {
+		this.products = products;
+	}
+
 	public User getUser() {
 		return user;
 	}
@@ -133,7 +149,8 @@ public class Product {
 			@NotEmpty(message = "Product name cannot be null or empty") @Size(min = 3, message = "Product name must be at least 3 characters long") String productName,
 			String description, @NotNull(message = "Price cannot be null") Double price,
 			@NotNull(message = "Quantity cannot be null") Integer quantity, Double specialPrice, String image,
-			@NotNull(message = "Discount cannot be null or empty") Double discount, Category category, User user) {
+			@NotNull(message = "Discount cannot be null or empty") Double discount, Category category, User user,
+			List<CartItem> products) {
 		super();
 		this.productId = productId;
 		this.productName = productName;
@@ -145,13 +162,14 @@ public class Product {
 		this.discount = discount;
 		this.category = category;
 		this.user = user;
+		this.products = products;
 	}
 
 	@Override
 	public String toString() {
 		return "Product [productId=" + productId + ", productName=" + productName + ", description=" + description
 				+ ", price=" + price + ", quantity=" + quantity + ", specialPrice=" + specialPrice + ", image=" + image
-				+ ", discount=" + discount + ", category=" + category + ", user=" + user + "]";
+				+ ", discount=" + discount + ", user=" + user + ", products=" + products + "]";
 	}
 	
 

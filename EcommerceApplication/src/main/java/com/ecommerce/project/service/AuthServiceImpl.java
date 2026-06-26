@@ -59,14 +59,21 @@ public class AuthServiceImpl {
 		//Token based authentication
 //		String jwtToken = jwtUtils.generateTokenFromUsername(userDetails);
 
+		
+		UserInfoResponse response = getTokenResponse(userDetails);
+		System.out.print("response : " + response);
+		return response;
+	}
+	
+	
+	public UserInfoResponse getTokenResponse(UserDetailsImpl userDetails){
 		ResponseCookie jwtToken = jwtUtils.generateJwtCookie(userDetails);
 
 		System.out.println("JwtToken : "+ jwtToken);
 		List<String> roles = userDetails.getAuthorities().stream().map(item -> item.getAuthority())
 				.collect(Collectors.toList());
 
-		UserInfoResponse response = new UserInfoResponse(userDetails.getId(), userDetails.getUsername(), roles,
-				jwtToken.toString());
+		UserInfoResponse response = new UserInfoResponse(userDetails.getId(), userDetails.getUsername(),jwtToken.toString(), roles);
 		System.out.print("response : " + response);
 		return response;
 	}

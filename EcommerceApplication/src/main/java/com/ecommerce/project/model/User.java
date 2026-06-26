@@ -19,6 +19,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 import jakarta.validation.constraints.Email;
@@ -58,6 +59,9 @@ public class User {
 	joinColumns = @JoinColumn(name = "user_id"),
 	inverseJoinColumns = @JoinColumn(name = "role_id")) 
 	private Set<Role> roles = new HashSet<Role>();
+	
+	@OneToOne(mappedBy = "user", cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+	private Cart cart;
 	
 	@OneToMany(mappedBy = "user",cascade = {CascadeType.MERGE, CascadeType.PERSIST},
 			orphanRemoval = true)
